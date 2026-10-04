@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+QA_data/
+shard-runtime/
+vision-runtime/
+build/
+dist/
+*.log
+.env
