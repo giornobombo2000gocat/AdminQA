@@ -22,10 +22,10 @@ def browser_executable(channel='chrome'):
 
 
 class CDPBrowser:
-    def __init__(self,profile_root,session_id,channel='chrome',headless=False):
+    def __init__(self,profile_root,session_id,channel='chrome',headless=False,stagehand=False):
         self.root=Path(profile_root).resolve()
         self.session_id=session_id;self.channel=channel;self.headless=headless
-        self.profile=None;self.process=None;self.endpoint=None
+        self.profile=None;self.process=None;self.endpoint=None;self.stagehand=stagehand
 
     async def start(self,playwright):
         executable=browser_executable(self.channel)
@@ -35,6 +35,8 @@ class CDPBrowser:
         args=[str(executable),'--remote-debugging-address=127.0.0.1','--remote-debugging-port=0',
               '--user-data-dir='+str(self.profile),'--no-first-run','--no-default-browser-check',
               '--disable-popup-blocking','about:blank']
+        if self.stagehand:
+            args[1:1]=['--enable-unsafe-extension-debugging','--remote-allow-origins=*']
         # Test-only headless sessions run inside the agent's Windows sandbox.
         # Visible desktop sessions keep Chrome's normal sandbox and GPU.
         if self.headless:args[1:1]=['--headless=new','--no-sandbox','--disable-gpu']

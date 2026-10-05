@@ -268,6 +268,9 @@ QLabel#title{font-size:24px;font-weight:bold}''')
         root=QWidget(); self.setCentralWidget(root); layout=QVBoxLayout(root); layout.setContentsMargins(24,20,24,20)
         title=QLabel('CDP • ІІ та математичний движок'); title.setObjectName('title'); layout.addWidget(title)
         layout.addWidget(QLabel('Браузер → ІІ входить у кімнату → підтвердження столу → математичний движок'))
+        self.agent_button=QPushButton('Stagehand • промпты для ИИ')
+        self.agent_button.clicked.connect(self.open_prompt_agent)
+        layout.addWidget(self.agent_button)
         row=QHBoxLayout(); self.sites=QComboBox(); row.addWidget(self.sites,1)
         self.add_site_button=QPushButton('Додати сайт'); self.add_site_button.clicked.connect(self.add_site); row.addWidget(self.add_site_button)
         self.site_settings_button=QPushButton('Змінити адресу'); self.site_settings_button.clicked.connect(self.site_settings); row.addWidget(self.site_settings_button)
@@ -307,6 +310,10 @@ QLabel#title{font-size:24px;font-weight:bold}''')
         self.sites.currentIndexChanged.connect(self.refresh_accounts)
         self.reload_sites(); self.update_engine_label()
         self.timer=QTimer(self); self.timer.timeout.connect(self.poll_log); self.timer.start(400)
+
+    def open_prompt_agent(self):
+        from stagehand_dialog import AgentDialog
+        AgentDialog(self.settings,self.save,self).exec()
 
     def save(self):
         self.settings['stealth']=self.stealth.isChecked(); self.store.save(self.settings)
@@ -481,6 +488,9 @@ QLabel#title{font-size:24px;font-weight:bold}''')
             self.save(); event.accept()
 
 def main():
+    if '--stagehand-self-test' in sys.argv:
+        from stagehand_agent import self_test as agent_self_test
+        return agent_self_test(Path(sys.argv[sys.argv.index('--stagehand-self-test')+1]).resolve())
     if '--vision-check' in sys.argv:
         from vision_check import run
         return run(Path(sys.argv[sys.argv.index('--vision-check')+1]).resolve())

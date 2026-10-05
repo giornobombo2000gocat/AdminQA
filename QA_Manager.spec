@@ -5,7 +5,7 @@ root = Path(SPECPATH)
 datas, binaries = [], []
 datas += [(str(root / 'scopa_demo.html'), '.'), (str(root / 'ScopaEngine.exe'), 'engine')]
 hiddenimports = ['uvicorn.loops.asyncio', 'uvicorn.protocols.http.h11_impl', 'uvicorn.lifespan.on']
-for package in ('playwright', 'playwright_stealth', 'shardx', 'patchright'):
+for package in ('playwright', 'playwright_stealth', 'shardx', 'patchright', 'stagehand'):
     data, libs, modules = collect_all(package)
     datas += data
     binaries += libs
